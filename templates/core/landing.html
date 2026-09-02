@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Find Your Life Partner{% endblock %}
+{% block meta_description %}Vivaha — A trusted matrimonial platform to find your perfect life partner. Create your profile and discover meaningful connections.{% endblock %}
+
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>
+                Find Your<br>
+                <span class="highlight">Perfect Match</span>
+            </h1>
+            <p>
+                Join thousands of families who have found meaningful connections through
+                our trusted matrimonial platform. Your journey to a beautiful partnership
+                starts here.
+            </p>
+            <div class="hero-actions">
+                <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg" id="hero-signup-btn">
+                    Create Free Profile
+                </a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-secondary btn-lg" id="hero-login-btn">
+                    Log In
+                </a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-illustration">
+                <div class="float-circle"></div>
+                <div class="float-circle"></div>
+                <div class="float-circle"></div>
+                <div class="hero-heart">💕</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Why Choose Vivaha?</h2>
+            <p>We combine tradition with technology to help you find a meaningful, lasting partnership.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Verified Profiles</h3>
+                <p>Every profile goes through a verification process to ensure authenticity and build trust within our community.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Smart Matching</h3>
+                <p>Our intelligent matching system considers your preferences, values, and lifestyle to suggest compatible profiles.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Privacy First</h3>
+                <p>You control who sees your profile and personal information. Your privacy is always in your hands.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Secure Messaging</h3>
+                <p>Connect with potential matches through our secure, in-platform messaging system after mutual interest.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👨‍👩‍👧‍👦</div>
+                <h3>Family Involvement</h3>
+                <p>Profiles can be created by family members, respecting the tradition of family participation in the process.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Works Everywhere</h3>
+                <p>Access your account from any device — desktop, tablet, or mobile. Your matches are always within reach.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <h2>How It Works</h2>
+            <p>Finding your life partner is simple with Vivaha.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Create Your Profile</h3>
+                <p>Sign up and build a comprehensive profile that showcases who you are and what you're looking for.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Discover Matches</h3>
+                <p>Browse through profiles that match your preferences and discover potential life partners.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Express Interest</h3>
+                <p>Send interest to profiles you like. When both parties are interested, start a conversation.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3>Connect & Meet</h3>
+                <p>Chat securely within the platform and take the next step toward a meaningful relationship.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Find Your Partner?</h2>
+        <p>Join our growing community of families seeking meaningful connections.</p>
+        <a href="{% url 'accounts:register' %}" class="btn btn-accent btn-lg" id="cta-signup-btn">
+            Get Started — It's Free
+        </a>
+    </div>
+</section>
+{% endblock %}

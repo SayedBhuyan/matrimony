@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account{% endblock %}
+{% block meta_description %}Create your free Vivaha account and start your journey to finding your perfect life partner.{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Create Your Account</h1>
+                <p>Join thousands of families finding meaningful connections</p>
+            </div>
+
+            <form method="post" novalidate id="register-form">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <p class="form-help">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="form-error">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                {% if form.non_field_errors %}
+                <div class="message message-error" style="margin-bottom: var(--space-4);">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary btn-full btn-lg" id="register-submit-btn">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account?
+                <a href="{% url 'accounts:login' %}">Log in</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

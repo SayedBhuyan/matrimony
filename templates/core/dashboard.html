@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Welcome back! 👋</h1>
+            <p>Here's an overview of your activity and next steps.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="stat-icon pink">👀</div>
+                <div class="stat-info">
+                    <h3>0</h3>
+                    <p>Profile Views</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon gold">💌</div>
+                <div class="stat-info">
+                    <h3>0</h3>
+                    <p>Interests Received</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✅</div>
+                <div class="stat-info">
+                    <h3>0</h3>
+                    <p>Accepted Connections</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">💬</div>
+                <div class="stat-info">
+                    <h3>0</h3>
+                    <p>Unread Messages</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Completion Prompt -->
+        <div class="card mt-8">
+            <div class="card-body" style="text-align: center; padding: var(--space-10);">
+                <h3 style="margin-bottom: var(--space-3);">Complete Your Profile</h3>
+                <p class="text-muted" style="margin-bottom: var(--space-6); max-width: 480px; margin-left: auto; margin-right: auto;">
+                    A complete profile gets up to 10x more responses. Add your details to
+                    start discovering compatible matches.
+                </p>
+                <a href="#" class="btn btn-primary btn-lg" id="complete-profile-btn">
+                    Set Up Profile →
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="action-cards">
+                <a href="#" class="action-card" id="action-discover">
+                    <span class="icon">🔍</span>
+                    <span>Discover Matches</span>
+                </a>
+                <a href="#" class="action-card" id="action-interests">
+                    <span class="icon">💌</span>
+                    <span>View Interests</span>
+                </a>
+                <a href="#" class="action-card" id="action-favorites">
+                    <span class="icon">⭐</span>
+                    <span>My Favorites</span>
+                </a>
+                <a href="#" class="action-card" id="action-settings">
+                    <span class="icon">⚙️</span>
+                    <span>Account Settings</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
