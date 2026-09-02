@@ -90,7 +90,11 @@
                 </a>
                 <a href="{% url 'connections:received_interests' %}" class="action-card" id="action-interests">
                     <span class="icon">💌</span>
-                    <span>View Interests</span>
+                    <span>Received Interests{% if interests_received_count %} ({{ interests_received_count }}){% endif %}</span>
+                </a>
+                <a href="{% url 'connections:sent_interests' %}" class="action-card" id="action-sent-interests">
+                    <span class="icon">📨</span>
+                    <span>Sent Interests{% if interests_sent_pending_count %} ({{ interests_sent_pending_count }} pending){% endif %}</span>
                 </a>
                 <a href="{% url 'connections:favorites_list' %}" class="action-card" id="action-favorites">
                     <span class="icon">⭐</span>

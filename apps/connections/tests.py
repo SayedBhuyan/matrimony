@@ -119,6 +119,22 @@ class InterestViewTests(TestCase):
         interest = Interest.objects.get(sender=self.user1, receiver=self.user2)
         self.assertEqual(interest.status, 'pending')
         self.assertEqual(interest.message, 'Hi there!')
+        self.assertTrue(Notification.objects.filter(
+            recipient=self.user2,
+            notification_type='interest_received',
+            action_url=f'/profiles/{self.profile1.id}/',
+        ).exists())
+
+    def test_send_interest_to_self_returns_validation_error(self):
+        self.client.login(email='user1@example.com', password='pass123')
+
+        response = self.client.post(
+            reverse('connections:send_interest', args=[self.profile1.id]),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error'], 'You cannot send interest to yourself.')
     
     def test_send_interest_requires_login(self):
         """Test that sending interest requires authentication."""
@@ -209,6 +225,16 @@ class InterestViewTests(TestCase):
         # Should show both interests
         interests = response.context['interests']
         self.assertEqual(interests.count(), 2)
+        self.assertContains(response, f'href="/profiles/{self.profile1.id}/"')
+
+    def test_sent_interests_view_links_to_recipient_profile(self):
+        Interest.objects.create(sender=self.user1, receiver=self.user2)
+
+        self.client.login(email='user1@example.com', password='pass123')
+        response = self.client.get(reverse('connections:sent_interests'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f'href="/profiles/{self.profile2.id}/"')
 
 
 class FavoriteTests(TestCase):

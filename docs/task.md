@@ -72,6 +72,12 @@
 - Discover cards and profile detail actions use the shared AJAX interaction layer.
 - Interest and favorite actions complete without page reloads.
 - Profile detail layout is responsive across phone, tablet, and desktop widths.
+- Interest requests now link directly to the other member's profile from received and sent lists.
+- Profile detail actions reflect pending and accepted interest state, including direct messaging after acceptance.
+- Self-interest, duplicate pending requests, and blocked-profile access are handled safely.
+- Sent interests are now surfaced from the dashboard and linked from the received-interests page.
+- Pending incoming and outgoing interests are prioritized at the top of their respective lists.
+- Dashboard counts show pending received interests and pending sent interests separately.
 
 ---
 

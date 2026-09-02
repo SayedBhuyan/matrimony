@@ -8,7 +8,10 @@
 <div class="container" style="padding: var(--space-8) var(--space-4);">
     <div class="card">
         <div class="card-header">
-            <h1 style="font-size: var(--font-size-2xl); margin: 0;">Received Interests</h1>
+            <div class="interest-page-heading">
+                <h1 style="font-size: var(--font-size-2xl); margin: 0;">Received Interests</h1>
+                <a href="{% url 'connections:sent_interests' %}" class="btn btn-secondary btn-sm">View Sent Interests</a>
+            </div>
         </div>
         <div class="card-body">
             {% if interests %}
@@ -18,7 +21,9 @@
                             <div class="card-body" style="display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; align-items: center;">
                                 <div style="flex: 1 1 220px; min-width: 0;">
                                     <h3 style="margin: 0 0 var(--space-1);">
-                                        {{ interest.sender.profile.display_name|default:interest.sender.email }}
+                                        <a href="{% url 'profiles:profile_detail' profile_id=interest.sender.profile.id %}">
+                                            {{ interest.sender.profile.display_name|default:interest.sender.email }}
+                                        </a>
                                     </h3>
                                     <p class="text-muted" style="margin: 0 0 var(--space-2);">
                                         Sent {{ interest.sent_at|date:"M d, Y" }}

@@ -50,9 +50,15 @@
                     <!-- Interactions (Express Interest, Shortlist) -->
                     {% if not is_owner %}
                     <div class="profile-actions" style="display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: flex-end;">
-                        <button class="btn btn-primary js-action" data-action="interest" data-url="{% url 'connections:send_interest' profile_id=profile.id %}" data-title="Send interest to {{ profile.display_name }}" title="Express Interest">
-                            💌 Send Interest
-                        </button>
+                        {% if current_interest.status == 'pending' %}
+                            <button class="btn btn-secondary" disabled>⏳ Interest Pending</button>
+                        {% elif current_interest.status == 'accepted' %}
+                            <a class="btn btn-primary" href="{% url 'messaging:conversation_detail' current_interest.conversation.id %}">💬 Message</a>
+                        {% else %}
+                            <button class="btn btn-primary js-action" data-action="interest" data-url="{% url 'connections:send_interest' profile_id=profile.id %}" data-title="Send interest to {{ profile.display_name }}" title="Express Interest">
+                                💌 Send Interest
+                            </button>
+                        {% endif %}
                         <button class="btn btn-secondary js-action" data-action="favorite" data-url="{% url 'connections:add_favorite' profile_id=profile.id %}" data-title="Save {{ profile.display_name }}" title="Save to Favorites">
                             ⭐ Favorite
                         </button>

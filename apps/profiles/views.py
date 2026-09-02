@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -27,6 +28,7 @@ from .models import (
     ProfileView,
 )
 from .services import calculate_profile_completion
+from apps.connections.models import Block, Interest
 
 
 @login_required
@@ -248,6 +250,12 @@ def profile_detail(request, profile_id):
 
     is_owner = request.user.is_authenticated and request.user == profile.user
 
+    if request.user.is_authenticated and not is_owner and Block.objects.filter(
+        Q(user=request.user, blocked_user=profile.user) |
+        Q(user=profile.user, blocked_user=request.user)
+    ).exists():
+        raise Http404
+
     if request.user.is_authenticated and not is_owner:
         ProfileView.objects.get_or_create(
             profile=profile,
@@ -266,8 +274,20 @@ def profile_detail(request, profile_id):
         if not request.user.is_authenticated:
             messages.info(request, 'Please log in to view this profile.')
             return redirect('accounts:login')
-        # Check connection status in Phase 4; for now allow registered or owner
-        pass
+        has_connection = Interest.objects.filter(
+            Q(sender=request.user, receiver=profile.user) |
+            Q(sender=profile.user, receiver=request.user),
+            status='accepted',
+        ).exists()
+        if not has_connection:
+            raise Http404
+
+    current_interest = None
+    if request.user.is_authenticated and not is_owner:
+        current_interest = Interest.objects.filter(
+            Q(sender=request.user, receiver=profile.user) |
+            Q(sender=profile.user, receiver=request.user),
+        ).select_related('conversation').order_by('-sent_at').first()
 
     # Visible photos based on privacy
     if is_owner:
@@ -281,5 +301,6 @@ def profile_detail(request, profile_id):
         'profile': profile,
         'photos': photos,
         'is_owner': is_owner,
+        'current_interest': current_interest,
     }
     return render(request, 'profiles/detail.html', context)

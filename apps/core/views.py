@@ -28,7 +28,8 @@ def dashboard(request):
         'profile': profile,
         'completion': completion,
         'profile_views_count': profile.views.count() if profile else 0,
-        'interests_received_count': Interest.objects.filter(receiver=request.user).count(),
+        'interests_received_count': Interest.objects.filter(receiver=request.user, status='pending').count(),
+        'interests_sent_pending_count': Interest.objects.filter(sender=request.user, status='pending').count(),
         'accepted_connections_count': Interest.objects.filter(
             status='accepted',
         ).filter(sender=request.user) | Interest.objects.filter(

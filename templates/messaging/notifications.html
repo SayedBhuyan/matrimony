@@ -14,7 +14,11 @@
                     {% for notification in notifications %}
                         <div class="card notification-item">
                             <div class="card-body">
-                                <strong>{{ notification.title }}</strong>
+                                {% if notification.action_url %}
+                                    <a href="{{ notification.action_url }}"><strong>{{ notification.title }}</strong></a>
+                                {% else %}
+                                    <strong>{{ notification.title }}</strong>
+                                {% endif %}
                                 <p style="margin: var(--space-2) 0 0;">{{ notification.message }}</p>
                             </div>
                         </div>

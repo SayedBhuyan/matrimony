@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.db.models import Case, IntegerField, Value, When
 from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
@@ -14,6 +15,10 @@ from .models import Interest, Favorite, Block, Report
 def send_interest(request, profile_id):
     """Send an interest to a profile."""
     profile = get_object_or_404(Profile, id=profile_id)
+
+    if profile.user == request.user:
+        return JsonResponse({'error': 'You cannot send interest to yourself.'}, status=400)
+
     message = request.POST.get('message', '')
     
     # Check if user has already sent a pending interest
@@ -133,7 +138,13 @@ def received_interests(request):
         receiver=request.user
     ).select_related(
         'sender__profile'
-    ).order_by('-sent_at')
+    ).annotate(
+        pending_first=Case(
+            When(status='pending', then=Value(0)),
+            default=Value(1),
+            output_field=IntegerField(),
+        )
+    ).order_by('pending_first', '-sent_at')
     
     context = {
         'interests': interests,
@@ -148,7 +159,13 @@ def sent_interests(request):
         sender=request.user
     ).select_related(
         'receiver__profile'
-    ).order_by('-sent_at')
+    ).annotate(
+        pending_first=Case(
+            When(status='pending', then=Value(0)),
+            default=Value(1),
+            output_field=IntegerField(),
+        )
+    ).order_by('pending_first', '-sent_at')
     
     context = {
         'interests': interests,
