@@ -22,9 +22,13 @@
         </header>
         <div class="message-thread" data-message-thread>
             <div class="conversation-date">Your connection is open</div>
-            {% for message in messages %}
+            {% for message in conversation_messages %}
                 <div class="message-row {% if message.sender == user %}message-row-own{% endif %}">
-                    <div class="message-bubble {% if message.sender == user %}message-bubble-own{% endif %}"><p>{{ message.body }}</p><small>{{ message.sent_at|date:"g:i A" }}</small></div>
+                    <div class="message-bubble {% if message.sender == user %}message-bubble-own{% endif %}">
+                        <strong class="message-sender">{% if message.sender.profile %}{{ message.sender.profile.display_name }}{% else %}{{ message.sender.email }}{% endif %}</strong>
+                        <p>{{ message.body }}</p>
+                        <small>{{ message.sent_at|date:"g:i A" }}</small>
+                    </div>
                 </div>
             {% empty %}
                 <div class="conversation-empty"><span>💬</span><h2>Start the conversation</h2><p>Say hello and begin getting to know each other.</p></div>

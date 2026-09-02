@@ -1574,19 +1574,20 @@ textarea.form-input {
 .notification-read-form { margin-top: var(--space-3); }
 .empty-state span, .conversation-empty span { display: block; margin-bottom: var(--space-3); font-size: 2.5rem; }
 .conversation-page { padding-top: var(--space-8); padding-bottom: var(--space-8); }
-.conversation-shell { display: flex; flex-direction: column; height: min(760px, calc(100vh - 9rem)); min-height: 520px; overflow: hidden; border: 1px solid var(--color-border-light); border-radius: var(--radius-xl); background: var(--color-surface); box-shadow: var(--shadow-lg); }
+.conversation-shell { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: min(760px, calc(100vh - 9rem)); min-height: 520px; overflow: hidden; border: 1px solid var(--color-border-light); border-radius: var(--radius-xl); background: var(--color-surface); box-shadow: var(--shadow-lg); }
 .conversation-header { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--color-border-light); background: var(--color-surface); }
 .conversation-back { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--color-gray-100); color: var(--color-text); font-size: var(--font-size-xl); }
 .conversation-person { min-width: 0; }
 .conversation-person h1 { font-size: var(--font-size-lg); overflow-wrap: anywhere; }
 .conversation-person p { color: var(--color-success); font-size: var(--font-size-xs); }
-.message-thread { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); background: linear-gradient(180deg, var(--color-gray-50), var(--color-surface)); }
+.message-thread { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); background: linear-gradient(180deg, var(--color-gray-50), var(--color-surface)); }
 .conversation-date { align-self: center; color: var(--color-text-muted); font-size: var(--font-size-xs); }
 .message-row { display: flex; justify-content: flex-start; }
 .message-row-own { justify-content: flex-end; }
 .message-bubble { max-width: min(72%, 520px); padding: var(--space-3) var(--space-4); border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 4px; background: white; box-shadow: var(--shadow-sm); }
 .message-bubble-own { border-radius: var(--radius-lg) var(--radius-lg) 4px var(--radius-lg); background: var(--color-primary-500); color: white; }
 .message-bubble p { overflow-wrap: anywhere; }
+.message-sender { display: block; margin-bottom: var(--space-1); font-size: var(--font-size-xs); }
 .message-bubble small { display: block; margin-top: var(--space-1); color: var(--color-text-muted); font-size: 0.68rem; }
 .message-bubble-own small { color: rgba(255,255,255,.75); }
 .conversation-empty { margin: auto; text-align: center; color: var(--color-text-secondary); }

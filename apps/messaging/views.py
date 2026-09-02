@@ -32,7 +32,7 @@ def conversation_detail(request, conversation_id):
     conversation.messages.filter(read_at__isnull=True).exclude(sender=request.user).update(read_at=timezone.now())
     return render(request, 'messaging/conversation_detail.html', {
         'conversation': conversation,
-        'messages': messages,
+        'conversation_messages': messages,
     })
 
 

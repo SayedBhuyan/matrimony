@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMessageDismiss();
     initActionModals();
     initAjaxForms();
+    initConversationThread();
 });
 
 /**
@@ -243,4 +244,10 @@ function escapeHtml(value) {
     const element = document.createElement('div');
     element.textContent = value;
     return element.innerHTML;
+}
+
+function initConversationThread() {
+    const thread = document.querySelector('[data-message-thread]');
+    if (!thread) return;
+    thread.scrollTop = thread.scrollHeight;
 }
