@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Search Matrimonial Profiles — Vivaha{% endblock %}
+{% block nav_discover %}active{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--space-8) var(--space-4);">
+    <div class="dashboard-header mb-6">
+        <h1>Discover & Search Profiles 🔍</h1>
+        <p>Filter candidates by criteria, values, education, and location.</p>
+    </div>
+
+    <!-- Search Layout: Filter Sidebar (Left) + Results Grid (Right) -->
+    <div style="display: grid; grid-template-columns: 280px 1fr; gap: var(--space-8); align-items: start;" class="search-layout">
+        <!-- Filter Sidebar -->
+        <aside>
+            <div class="card" style="position: sticky; top: calc(var(--header-height) + var(--space-4));">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4);">
+                    <h3 style="font-size: var(--font-size-base);">Filters</h3>
+                    <a href="{% url 'discovery:search' %}" class="text-small" style="color: var(--color-primary-600);">
+                        Reset All
+                    </a>
+                </div>
+                <div class="card-body" style="padding: var(--space-4);">
+                    <form method="get" action="{% url 'discovery:search' %}">
+                        <!-- Keyword Search -->
+                        <div class="form-group">
+                            <label class="form-label">Keyword</label>
+                            {{ filter.form.q }}
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-group">
+                            <label class="form-label">Looking For</label>
+                            {{ filter.form.gender }}
+                        </div>
+
+                        <!-- Age Range -->
+                        <div class="form-group">
+                            <label class="form-label">Age Range</label>
+                            <div style="display: flex; gap: var(--space-2); align-items: center;">
+                                {{ filter.form.min_age }}
+                                <span class="text-muted">to</span>
+                                {{ filter.form.max_age }}
+                            </div>
+                        </div>
+
+                        <!-- Marital Status -->
+                        <div class="form-group">
+                            <label class="form-label">Marital Status</label>
+                            {{ filter.form.marital_status }}
+                        </div>
+
+                        <!-- Religion -->
+                        <div class="form-group">
+                            <label class="form-label">Religion</label>
+                            {{ filter.form.religion }}
+                        </div>
+
+                        <!-- Mother Tongue -->
+                        <div class="form-group">
+                            <label class="form-label">Mother Tongue</label>
+                            {{ filter.form.mother_tongue }}
+                        </div>
+
+                        <!-- Country & City -->
+                        <div class="form-group">
+                            <label class="form-label">Country</label>
+                            {{ filter.form.country }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">City</label>
+                            {{ filter.form.city }}
+                        </div>
+
+                        <!-- Education Level -->
+                        <div class="form-group">
+                            <label class="form-label">Education</label>
+                            {{ filter.form.highest_education }}
+                        </div>
+
+                        <!-- Diet -->
+                        <div class="form-group">
+                            <label class="form-label">Diet</label>
+                            {{ filter.form.diet }}
+                        </div>
+
+                        <!-- Checkboxes: Photo & Verified -->
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: var(--space-2);">
+                            <label style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); cursor: pointer;">
+                                {{ filter.form.has_photo }}
+                                <span>With Photo Only</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); cursor: pointer;">
+                                {{ filter.form.is_verified }}
+                                <span>Verified Members Only</span>
+                            </label>
+                        </div>
+
+                        <!-- Sort option -->
+                        <div class="form-group">
+                            <label class="form-label">Sort By</label>
+                            {{ filter.form.sort }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full mt-4" id="apply-filters-btn">
+                            Apply Filters
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Results Column -->
+        <main>
+            <!-- Results Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); background: var(--color-surface); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border-light);">
+                <div>
+                    <strong>{{ total_results_count }}</strong> profiles matching your criteria
+                </div>
+                <div style="display: flex; gap: var(--space-2);">
+                    <a href="{% url 'discovery:matches' %}" class="btn btn-secondary btn-sm">
+                        ⭐ Switch to Recommendations
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Cards Grid -->
+            {% if page_obj %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-6);">
+                {% for profile in page_obj %}
+                    {% include "components/profile_card.html" with profile=profile %}
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div style="display: flex; justify-content: center; gap: var(--space-2); margin-top: var(--space-8);">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="btn btn-secondary btn-sm">
+                    ← Previous
+                </a>
+                {% endif %}
+
+                <span style="display: flex; align-items: center; padding: 0 var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="btn btn-secondary btn-sm">
+                    Next →
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="card">
+                <div class="card-body" style="text-align: center; padding: var(--space-12);">
+                    <div style="font-size: 3.5rem; margin-bottom: var(--space-3);">🔍</div>
+                    <h3 style="font-size: var(--font-size-xl); margin-bottom: var(--space-2);">No Profiles Found</h3>
+                    <p class="text-muted" style="max-width: 450px; margin: 0 auto var(--space-6);">
+                        No candidates match the exact combination of filters you selected. Try clearing or widening some search filters.
+                    </p>
+                    <a href="{% url 'discovery:search' %}" class="btn btn-primary">
+                        Clear All Filters
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+{% endblock %}

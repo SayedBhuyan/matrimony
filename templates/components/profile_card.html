@@ -1,0 +1,83 @@
+{% load static %}
+<div class="card profile-card" style="display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; height: 100%; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+    <!-- Top photo container -->
+    <div style="position: relative; width: 100%; aspect-ratio: 4 / 3; background: var(--color-gray-100); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        {% if profile.primary_photo %}
+            <img src="{{ profile.primary_photo.image.url }}" alt="{{ profile.display_name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+        {% else %}
+            <div style="font-size: 3.5rem; opacity: 0.5;">👤</div>
+        {% endif %}
+
+        <!-- Match Score Badge -->
+        {% if profile.match_breakdown %}
+        <div style="position: absolute; top: 12px; right: 12px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 4px; color: {% if profile.match_breakdown.score >= 70 %}var(--color-primary-600){% else %}var(--color-gray-700){% endif %};">
+            <span>⚡ {{ profile.match_breakdown.score }}% Match</span>
+        </div>
+        {% endif %}
+
+        <!-- Verification Badge -->
+        {% if profile.is_verified %}
+        <div style="position: absolute; bottom: 12px; left: 12px; background: var(--color-success); color: white; padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); box-shadow: var(--shadow-sm);">
+            ✓ Verified
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Body Information -->
+    <div class="card-body" style="padding: var(--space-4); flex: 1; display: flex; flex-direction: column;">
+        <div style="margin-bottom: var(--space-2);">
+            <h3 style="font-size: var(--font-size-lg); margin-bottom: 2px;">
+                <a href="{% url 'profiles:profile_detail' profile_id=profile.id %}" style="color: var(--color-text);">
+                    {{ profile.display_name }}
+                </a>
+            </h3>
+            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+                {{ profile.age }} yrs • {{ profile.height_formatted|default:"" }} • {{ profile.city }}, {{ profile.country }}
+            </p>
+        </div>
+
+        <!-- Attribute Tags -->
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-1); margin-bottom: var(--space-3);">
+            <span style="background: var(--color-gray-100); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--font-size-xs); color: var(--color-text-secondary);">
+                🕊️ {{ profile.religion }}
+            </span>
+            <span style="background: var(--color-gray-100); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--font-size-xs); color: var(--color-text-secondary);">
+                🗣️ {{ profile.mother_tongue }}
+            </span>
+            {% if profile.profession %}
+            <span style="background: var(--color-accent-50); color: var(--color-accent-600); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--font-size-xs); font-weight: var(--font-weight-medium);">
+                💼 {{ profile.profession.occupation }}
+            </span>
+            {% endif %}
+        </div>
+
+        <!-- Matched Highlights if available -->
+        {% if profile.match_breakdown and profile.match_breakdown.matched_traits %}
+        <div style="margin-top: auto; margin-bottom: var(--space-3); padding-top: var(--space-2); border-top: 1px dashed var(--color-border-light);">
+            <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: var(--font-weight-semibold); margin-bottom: 2px;">
+                Compatibility Highlights
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                {% for trait in profile.match_breakdown.matched_traits|slice:":3" %}
+                <span style="font-size: 0.72rem; color: var(--color-success); background: var(--color-success-light); padding: 1px 6px; border-radius: var(--radius-sm);">
+                    ✓ {{ trait }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Action Footer -->
+    <div class="card-footer" style="padding: var(--space-3) var(--space-4); display: flex; gap: var(--space-2); background: var(--color-gray-50);">
+        <a href="{% url 'profiles:profile_detail' profile_id=profile.id %}" class="btn btn-secondary btn-sm" style="flex: 1;">
+            View Profile
+        </a>
+        <button type="button" class="btn btn-primary btn-sm" title="Send Interest">
+            💌
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" title="Shortlist">
+            ⭐
+        </button>
+    </div>
+</div>

@@ -17,9 +17,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Load environment variables from .env file
 load_dotenv(BASE_DIR / '.env')
 
-# Add apps/ directory to Python path so apps can be imported directly
-sys.path.insert(0, str(BASE_DIR / 'apps'))
-
 # =============================================================================
 # SECURITY
 # =============================================================================
@@ -53,8 +50,10 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'core',
-    'accounts',
+    'apps.core',
+    'apps.accounts',
+    'apps.profiles',
+    'apps.discovery',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

@@ -9,8 +9,10 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('', include('core.urls')),
+    path('accounts/', include('apps.accounts.urls')),
+    path('profiles/', include('apps.profiles.urls')),
+    path('discover/', include('apps.discovery.urls')),
+    path('', include('apps.core.urls')),
 ]
 
 # Serve media files in development

@@ -43,25 +43,48 @@
             </div>
         </div>
 
-        <!-- Profile Completion Prompt -->
-        <div class="card mt-8">
+        <!-- Profile Completion / Welcome Prompt -->
+        {% if not profile %}
+        <div class="card mt-8" style="border: 2px dashed var(--color-primary-300); background: var(--color-primary-50);">
             <div class="card-body" style="text-align: center; padding: var(--space-10);">
-                <h3 style="margin-bottom: var(--space-3);">Complete Your Profile</h3>
-                <p class="text-muted" style="margin-bottom: var(--space-6); max-width: 480px; margin-left: auto; margin-right: auto;">
-                    A complete profile gets up to 10x more responses. Add your details to
-                    start discovering compatible matches.
+                <div style="font-size: 3rem; margin-bottom: var(--space-2);">🌟</div>
+                <h2 style="font-size: var(--font-size-2xl); margin-bottom: var(--space-3);">Complete Your Matrimonial Profile</h2>
+                <p class="text-muted" style="margin-bottom: var(--space-6); max-width: 500px; margin-left: auto; margin-right: auto;">
+                    Create your profile to start receiving matches, viewing partner recommendations, and expressing interest in verified members.
                 </p>
-                <a href="#" class="btn btn-primary btn-lg" id="complete-profile-btn">
-                    Set Up Profile →
+                <a href="{% url 'profiles:profile_setup' %}" class="btn btn-primary btn-lg" id="complete-profile-btn">
+                    Set Up Profile Now →
                 </a>
             </div>
         </div>
+        {% elif completion.percentage < 100 %}
+        <div class="card mt-8" style="background: linear-gradient(135deg, var(--color-primary-50), #ffffff); border-color: var(--color-primary-200);">
+            <div class="card-body" style="padding: var(--space-6);">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4);">
+                    <div>
+                        <h3 style="font-size: var(--font-size-xl); margin-bottom: var(--space-1);">
+                            Profile Completion: {{ completion.percentage }}%
+                        </h3>
+                        <p class="text-muted" style="font-size: var(--font-size-sm);">
+                            Recommended: {{ completion.missing_recommended|slice:":3"|join:", " }}
+                        </p>
+                    </div>
+                    <a href="{% url 'profiles:profile_edit' section='basic' %}" class="btn btn-primary btn-sm">
+                        Improve Profile Strength
+                    </a>
+                </div>
+                <div style="width: 100%; height: 8px; background: var(--color-gray-200); border-radius: 999px; margin-top: var(--space-4); overflow: hidden;">
+                    <div style="width: {{ completion.percentage }}%; height: 100%; background: linear-gradient(90deg, var(--color-primary-500), var(--color-accent-500));"></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Quick Actions -->
         <div class="quick-actions">
             <h2>Quick Actions</h2>
             <div class="action-cards">
-                <a href="#" class="action-card" id="action-discover">
+                <a href="{% url 'discovery:matches' %}" class="action-card" id="action-discover">
                     <span class="icon">🔍</span>
                     <span>Discover Matches</span>
                 </a>

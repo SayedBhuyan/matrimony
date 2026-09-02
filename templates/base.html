@@ -36,7 +36,10 @@
                     <a href="{% url 'core:dashboard' %}" class="nav-link {% block nav_dashboard %}{% endblock %}">
                         🏠 Dashboard
                     </a>
-                    <a href="#" class="nav-link {% block nav_discover %}{% endblock %}">
+                    <a href="{% url 'profiles:my_profile' %}" class="nav-link {% block nav_profile %}{% endblock %}">
+                        👤 My Profile
+                    </a>
+                    <a href="{% url 'discovery:matches' %}" class="nav-link {% block nav_discover %}{% endblock %}">
                         🔍 Discover
                     </a>
                     <a href="#" class="nav-link {% block nav_interests %}{% endblock %}">

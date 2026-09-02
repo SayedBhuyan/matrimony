@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Recommended Matches — Vivaha{% endblock %}
+{% block nav_discover %}active{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--space-8) var(--space-4);">
+    <!-- Header Banner -->
+    <div class="card mb-8" style="background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-800)); color: white; border: none;">
+        <div class="card-body" style="padding: var(--space-8);">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4);">
+                <div>
+                    <h1 style="color: white; font-size: var(--font-size-3xl); margin-bottom: var(--space-2);">
+                        🌟 Your Daily Matches & Recommendations
+                    </h1>
+                    <p style="color: rgba(255, 255, 255, 0.9); font-size: var(--font-size-base); max-width: 600px;">
+                        Handpicked profiles ranked by your partner preferences, values, lifestyle compatibility, and activity.
+                    </p>
+                </div>
+                <div style="display: flex; gap: var(--space-3);">
+                    <a href="{% url 'discovery:search' %}" class="btn btn-secondary">
+                        🔍 Advanced Search
+                    </a>
+                    {% if searcher_profile %}
+                    <a href="{% url 'profiles:profile_edit' section='preferences' %}" class="btn btn-accent">
+                        ⚙️ Edit Preferences
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Overview -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6);">
+        <h2 style="font-size: var(--font-size-xl);">
+            Top Matches <span style="font-size: var(--font-size-base); color: var(--color-text-secondary); font-weight: normal;">({{ total_matches_count }} profiles found)</span>
+        </h2>
+    </div>
+
+    <!-- Profile Cards Grid -->
+    {% if page_obj %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-6); margin-bottom: var(--space-8);">
+        {% for profile in page_obj %}
+            {% include "components/profile_card.html" with profile=profile %}
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div style="display: flex; justify-content: center; gap: var(--space-2); margin-top: var(--space-8);">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary btn-sm">
+            ← Previous
+        </a>
+        {% endif %}
+
+        <span style="display: flex; align-items: center; padding: 0 var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary btn-sm">
+            Next →
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="card">
+        <div class="card-body" style="text-align: center; padding: var(--space-12);">
+            <div style="font-size: 3.5rem; margin-bottom: var(--space-3);">💌</div>
+            <h3 style="font-size: var(--font-size-xl); margin-bottom: var(--space-2);">No Compatible Profiles Found Yet</h3>
+            <p class="text-muted" style="max-width: 480px; margin: 0 auto var(--space-6);">
+                Try broadening your partner preferences or use our advanced search to explore profiles across different regions.
+            </p>
+            <div style="display: flex; justify-content: center; gap: var(--space-3);">
+                <a href="{% url 'discovery:search' %}" class="btn btn-primary">
+                    Explore All Profiles
+                </a>
+                {% if searcher_profile %}
+                <a href="{% url 'profiles:profile_edit' section='preferences' %}" class="btn btn-secondary">
+                    Update Preferences
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

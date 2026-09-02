@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile.display_name }} — Matrimonial Profile{% endblock %}
+{% block meta_description %}View profile of {{ profile.display_name }}, {{ profile.age }} years, {{ profile.city }}, {{ profile.country }} on Vivaha.{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--space-8) var(--space-4);">
+    <!-- Profile Hero Card -->
+    <div class="card mb-6" style="overflow: hidden;">
+        <div style="display: grid; grid-template-columns: minmax(240px, 320px) 1fr; gap: var(--space-8); align-items: start; padding: var(--space-6);">
+            <!-- Photo Gallery Column -->
+            <div>
+                <div style="aspect-ratio: 1; border-radius: var(--radius-xl); overflow: hidden; background: var(--color-gray-100); border: 2px solid var(--color-border-light); margin-bottom: var(--space-3); display: flex; align-items: center; justify-content: center; font-size: 5rem;">
+                    {% if profile.primary_photo %}
+                        <img id="main-photo" src="{{ profile.primary_photo.image.url }}" alt="{{ profile.display_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        👤
+                    {% endif %}
+                </div>
+
+                <!-- Thumbnails if multiple photos -->
+                {% if photos|length > 1 %}
+                <div style="display: flex; gap: var(--space-2); overflow-x: auto; padding-bottom: var(--space-2);">
+                    {% for photo in photos %}
+                    <div style="width: 60px; height: 60px; border-radius: var(--radius-md); overflow: hidden; border: 2px solid {% if photo.is_primary %}var(--color-primary-500){% else %}var(--color-border){% endif %}; cursor: pointer;" onclick="document.getElementById('main-photo').src='{{ photo.image.url }}'">
+                        <img src="{{ photo.image.url }}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Info Summary -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4);">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-1);">
+                            <h1 style="font-size: var(--font-size-3xl);">{{ profile.display_name }}</h1>
+                            {% if profile.is_verified %}
+                            <span style="background: var(--color-success-light); color: var(--color-success); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);">
+                                ✓ Verified Member
+                            </span>
+                            {% endif %}
+                        </div>
+                        <p style="color: var(--color-text-secondary); font-size: var(--font-size-lg); margin-bottom: var(--space-4);">
+                            {{ profile.age }} yrs • {{ profile.height_formatted|default:"" }} • {{ profile.city }}, {{ profile.country }}
+                        </p>
+                    </div>
+
+                    <!-- Interactions (Express Interest, Shortlist) -->
+                    {% if not is_owner %}
+                    <div style="display: flex; gap: var(--space-2);">
+                        <button class="btn btn-primary" id="btn-express-interest" title="Express Interest">
+                            💌 Send Interest
+                        </button>
+                        <button class="btn btn-secondary" id="btn-favorite" title="Save to Favorites">
+                            ⭐
+                        </button>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'profiles:profile_edit' section='basic' %}" class="btn btn-secondary">
+                        ✏️ Edit Profile
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Key Attributes Pills -->
+                <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-6);">
+                    <span style="background: var(--color-primary-50); color: var(--color-primary-700); padding: 6px 14px; border-radius: var(--radius-full); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">
+                        🕊️ {{ profile.religion }}{% if profile.caste %} - {{ profile.caste }}{% endif %}
+                    </span>
+                    <span style="background: var(--color-gray-100); padding: 6px 14px; border-radius: var(--radius-full); font-size: var(--font-size-sm);">
+                        🗣️ {{ profile.mother_tongue }}
+                    </span>
+                    <span style="background: var(--color-gray-100); padding: 6px 14px; border-radius: var(--radius-full); font-size: var(--font-size-sm);">
+                        💍 {{ profile.get_marital_status_display }}
+                    </span>
+                    {% if profile.profession %}
+                    <span style="background: var(--color-accent-50); color: var(--color-accent-600); padding: 6px 14px; border-radius: var(--radius-full); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">
+                        💼 {{ profile.profession.occupation }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- About Me -->
+                {% if profile.about_me %}
+                <div style="border-top: 1px solid var(--color-border-light); padding-top: var(--space-4);">
+                    <h3 style="font-size: var(--font-size-base); margin-bottom: var(--space-2); color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">
+                        About
+                    </h3>
+                    <p style="line-height: var(--line-height-relaxed);">{{ profile.about_me|linebreaks }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Structured Details Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-6);">
+        <!-- Education & Career -->
+        <div class="card">
+            <div class="card-header">
+                <h3>🎓 Education & Profession</h3>
+            </div>
+            <div class="card-body">
+                <table style="width: 100%; border-collapse: collapse;">
+                    {% if profile.education %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary); width: 45%;">Highest Education</td>
+                        <td style="padding: var(--space-2) 0; font-weight: var(--font-weight-medium);">{{ profile.education.get_highest_education_display }}</td>
+                    </tr>
+                    {% if profile.education.institution %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">University / College</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.education.institution }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if profile.education.field_of_study %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Field of Study</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.education.field_of_study }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endif %}
+                    {% if profile.profession %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Occupation</td>
+                        <td style="padding: var(--space-2) 0; font-weight: var(--font-weight-medium);">{{ profile.profession.occupation }}</td>
+                    </tr>
+                    {% if profile.profession.employer %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Employer</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.profession.employer }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if profile.profession.income_visible and profile.profession.annual_income %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Annual Income</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.profession.annual_income }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+        <!-- Family Details -->
+        <div class="card">
+            <div class="card-header">
+                <h3>👨‍👩‍👧‍👦 Family Details</h3>
+            </div>
+            <div class="card-body">
+                {% if profile.family %}
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary); width: 45%;">Family Type</td>
+                        <td style="padding: var(--space-2) 0; font-weight: var(--font-weight-medium);">{{ profile.family.get_family_type_display }}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Family Values</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.family.get_family_values_display }}</td>
+                    </tr>
+                    {% if profile.family.family_location %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Family Base</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.family.family_location }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if profile.family.father_occupation %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Father's Occupation</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.family.father_occupation }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if profile.family.mother_occupation %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Mother's Occupation</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.family.mother_occupation }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+                {% else %}
+                <p class="text-muted">Not specified.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Lifestyle & Habits -->
+        <div class="card">
+            <div class="card-header">
+                <h3>🥗 Lifestyle & Habits</h3>
+            </div>
+            <div class="card-body">
+                {% if profile.lifestyle %}
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary); width: 45%;">Diet</td>
+                        <td style="padding: var(--space-2) 0; font-weight: var(--font-weight-medium);">{{ profile.lifestyle.get_diet_display }}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Smoking</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.lifestyle.get_smoking_display }}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Drinking</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.lifestyle.get_drinking_display }}</td>
+                    </tr>
+                    {% if profile.lifestyle.hobbies %}
+                    <tr style="border-bottom: 1px solid var(--color-border-light);">
+                        <td style="padding: var(--space-2) 0; color: var(--color-text-secondary);">Hobbies</td>
+                        <td style="padding: var(--space-2) 0;">{{ profile.lifestyle.hobbies }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+                {% else %}
+                <p class="text-muted">Not specified.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Partner Preferences -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <div class="card-header">
+                <h3>💍 Looking for in a Partner</h3>
+            </div>
+            <div class="card-body">
+                {% if profile.partner_preference %}
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4);">
+                    <div><strong>Preferred Age:</strong> {{ profile.partner_preference.min_age }} - {{ profile.partner_preference.max_age }} years</div>
+                    {% if profile.partner_preference.preferred_marital_status %}<div><strong>Marital Status:</strong> {{ profile.partner_preference.preferred_marital_status }}</div>{% endif %}
+                    {% if profile.partner_preference.preferred_religion %}<div><strong>Religion:</strong> {{ profile.partner_preference.preferred_religion }}</div>{% endif %}
+                    {% if profile.partner_preference.preferred_education %}<div><strong>Education:</strong> {{ profile.partner_preference.preferred_education }}</div>{% endif %}
+                    {% if profile.partner_preference.preferred_country %}<div><strong>Country:</strong> {{ profile.partner_preference.preferred_country }}</div>{% endif %}
+                </div>
+                {% if profile.partner_preference.notes %}
+                <div style="margin-top: var(--space-4); border-top: 1px solid var(--color-border-light); padding-top: var(--space-3);">
+                    <strong>Expectations:</strong> {{ profile.partner_preference.notes }}
+                </div>
+                {% endif %}
+                {% else %}
+                <p class="text-muted">No specific preferences listed.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — {{ profile.display_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--space-8) var(--space-4);">
+    <!-- Profile Completion Alert if incomplete -->
+    {% if completion.percentage < 100 %}
+    <div class="card mb-6" style="background: linear-gradient(135deg, var(--color-accent-50), #ffffff); border-color: var(--color-accent-200);">
+        <div class="card-body" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4);">
+            <div>
+                <h3 style="font-size: var(--font-size-lg); color: var(--color-accent-600); margin-bottom: var(--space-1);">
+                    Profile Completion: {{ completion.percentage }}%
+                </h3>
+                <p class="text-muted" style="font-size: var(--font-size-sm);">
+                    Missing: {{ completion.missing_recommended|slice:":3"|join:", " }}
+                </p>
+            </div>
+            <a href="{% url 'profiles:profile_edit' section='basic' %}" class="btn btn-primary btn-sm">
+                Complete Profile Now
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Profile Header Card -->
+    <div class="card mb-6">
+        <div class="card-body" style="display: grid; grid-template-columns: 200px 1fr auto; gap: var(--space-6); align-items: center;">
+            <!-- Avatar / Primary Photo -->
+            <div style="aspect-ratio: 1; border-radius: var(--radius-xl); overflow: hidden; background: var(--color-gray-100); border: 2px solid var(--color-border-light); display: flex; align-items: center; justify-content: center; font-size: 4rem;">
+                {% if profile.primary_photo %}
+                    <img src="{{ profile.primary_photo.image.url }}" alt="{{ profile.display_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    👤
+                {% endif %}
+            </div>
+
+            <!-- Basic Details -->
+            <div>
+                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+                    <h1 style="font-size: var(--font-size-2xl);">{{ profile.display_name }}</h1>
+                    {% if profile.is_verified %}
+                    <span style="background: var(--color-success-light); color: var(--color-success); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);">
+                        ✓ Verified
+                    </span>
+                    {% endif %}
+                </div>
+                <p style="color: var(--color-text-secondary); font-size: var(--font-size-base); margin-bottom: var(--space-3);">
+                    {{ profile.age }} yrs • {{ profile.height_formatted|default:"Height not set" }} • {{ profile.city }}, {{ profile.country }}
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                    <span style="background: var(--color-gray-100); padding: 4px 10px; border-radius: var(--radius-md); font-size: var(--font-size-xs);">
+                        🕊️ {{ profile.religion }}
+                    </span>
+                    <span style="background: var(--color-gray-100); padding: 4px 10px; border-radius: var(--radius-md); font-size: var(--font-size-xs);">
+                        🗣️ {{ profile.mother_tongue }}
+                    </span>
+                    <span style="background: var(--color-gray-100); padding: 4px 10px; border-radius: var(--radius-md); font-size: var(--font-size-xs);">
+                        💍 {{ profile.get_marital_status_display }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                <a href="{% url 'profiles:profile_edit' section='basic' %}" class="btn btn-primary">
+                    ✏️ Edit Profile
+                </a>
+                <a href="{% url 'profiles:profile_detail' profile_id=profile.id %}" class="btn btn-secondary">
+                    🌐 Public View
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-6);">
+        <!-- About Me -->
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>About Me</h3>
+                <a href="{% url 'profiles:profile_edit' section='basic' %}" class="text-small">Edit</a>
+            </div>
+            <div class="card-body">
+                <p>{{ profile.about_me|default:"No introduction provided yet. Click edit to add your bio."|linebreaks }}</p>
+            </div>
+        </div>
+
+        <!-- Education & Career -->
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Education & Profession</h3>
+                <a href="{% url 'profiles:profile_edit' section='education' %}" class="text-small">Edit</a>
+            </div>
+            <div class="card-body">
+                {% if profile.education or profile.profession %}
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-3);">
+                        {% if profile.education %}
+                        <li>
+                            <strong>Highest Education:</strong> {{ profile.education.get_highest_education_display }}
+                            {% if profile.education.institution %}({{ profile.education.institution }}){% endif %}
+                        </li>
+                        {% endif %}
+                        {% if profile.profession %}
+                        <li><strong>Occupation:</strong> {{ profile.profession.occupation }}</li>
+                        {% if profile.profession.employer %}<li><strong>Employer:</strong> {{ profile.profession.employer }}</li>{% endif %}
+                        {% if profile.profession.annual_income %}<li><strong>Income:</strong> {{ profile.profession.annual_income }}</li>{% endif %}
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Education and profession details not added yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Family Background -->
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Family Background</h3>
+                <a href="{% url 'profiles:profile_edit' section='family' %}" class="text-small">Edit</a>
+            </div>
+            <div class="card-body">
+                {% if profile.family %}
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-2);">
+                        <li><strong>Family Type:</strong> {{ profile.family.get_family_type_display }}</li>
+                        <li><strong>Family Values:</strong> {{ profile.family.get_family_values_display }}</li>
+                        {% if profile.family.family_location %}<li><strong>Family Location:</strong> {{ profile.family.family_location }}</li>{% endif %}
+                        {% if profile.family.father_occupation %}<li><strong>Father:</strong> {{ profile.family.father_occupation }}</li>{% endif %}
+                        {% if profile.family.mother_occupation %}<li><strong>Mother:</strong> {{ profile.family.mother_occupation }}</li>{% endif %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Family details not added yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Lifestyle & Habits -->
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Lifestyle & Habits</h3>
+                <a href="{% url 'profiles:profile_edit' section='lifestyle' %}" class="text-small">Edit</a>
+            </div>
+            <div class="card-body">
+                {% if profile.lifestyle %}
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-2);">
+                        <li><strong>Diet:</strong> {{ profile.lifestyle.get_diet_display }}</li>
+                        <li><strong>Smoking:</strong> {{ profile.lifestyle.get_smoking_display }}</li>
+                        <li><strong>Drinking:</strong> {{ profile.lifestyle.get_drinking_display }}</li>
+                        {% if profile.lifestyle.hobbies %}<li><strong>Hobbies:</strong> {{ profile.lifestyle.hobbies }}</li>{% endif %}
+                        {% if profile.lifestyle.spoken_languages %}<li><strong>Languages:</strong> {{ profile.lifestyle.spoken_languages }}</li>{% endif %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Lifestyle details not added yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Partner Preferences -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Partner Preferences</h3>
+                <a href="{% url 'profiles:profile_edit' section='preferences' %}" class="text-small">Edit</a>
+            </div>
+            <div class="card-body">
+                {% if profile.partner_preference %}
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4);">
+                        <div><strong>Age Range:</strong> {{ profile.partner_preference.min_age }} to {{ profile.partner_preference.max_age }} years</div>
+                        {% if profile.partner_preference.preferred_marital_status %}<div><strong>Marital Status:</strong> {{ profile.partner_preference.preferred_marital_status }}</div>{% endif %}
+                        {% if profile.partner_preference.preferred_religion %}<div><strong>Religion:</strong> {{ profile.partner_preference.preferred_religion }}</div>{% endif %}
+                        {% if profile.partner_preference.preferred_education %}<div><strong>Education:</strong> {{ profile.partner_preference.preferred_education }}</div>{% endif %}
+                        {% if profile.partner_preference.preferred_country %}<div><strong>Country:</strong> {{ profile.partner_preference.preferred_country }}</div>{% endif %}
+                    </div>
+                    {% if profile.partner_preference.notes %}
+                    <div style="margin-top: var(--space-4); border-top: 1px solid var(--color-border-light); padding-top: var(--space-3);">
+                        <strong>Notes:</strong> {{ profile.partner_preference.notes }}
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted">No partner preferences specified yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

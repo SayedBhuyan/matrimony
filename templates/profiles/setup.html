@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Set Up Your Matrimonial Profile{% endblock %}
+{% block meta_description %}Create your matrimonial profile on Vivaha and start connecting with potential matches.{% endblock %}
+
+{% block content %}
+<div class="container container-narrow" style="padding: var(--space-8) var(--space-4);">
+    <div class="card">
+        <div class="card-header" style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: var(--space-2);">🌸</div>
+            <h1 style="font-size: var(--font-size-2xl);">Welcome to Vivaha! Let's Set Up Your Profile</h1>
+            <p class="text-muted" style="margin-top: var(--space-2);">
+                Tell us the basic details to create your matrimonial presence. You can add more details right after.
+            </p>
+        </div>
+
+        <div class="card-body">
+            <form method="post" novalidate id="profile-setup-form">
+                {% csrf_token %}
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4);">
+                    {% for field in form %}
+                    <div class="form-group" {% if field.name == 'about_me' %}style="grid-column: 1 / -1;"{% endif %}>
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            {{ field.label }}
+                            {% if field.field.required %}<span style="color: var(--color-danger);">*</span>{% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <p class="form-help">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="form-error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div style="margin-top: var(--space-6); text-align: center;">
+                    <button type="submit" class="btn btn-primary btn-lg" style="min-width: 200px;" id="setup-submit-btn">
+                        Save & Continue to Details →
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
