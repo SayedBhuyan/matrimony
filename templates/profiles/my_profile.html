@@ -3,7 +3,7 @@
 {% block title %}My Profile — {{ profile.display_name }}{% endblock %}
 
 {% block content %}
-<div class="container" style="padding: var(--space-8) var(--space-4);">
+<div class="container my-profile-page" style="padding: var(--space-8) var(--space-4);">
     <!-- Profile Completion Alert if incomplete -->
     {% if completion.percentage < 100 %}
     <div class="card mb-6" style="background: linear-gradient(135deg, var(--color-accent-50), #ffffff); border-color: var(--color-accent-200);">
@@ -25,9 +25,9 @@
 
     <!-- Profile Header Card -->
     <div class="card mb-6">
-        <div class="card-body" style="display: grid; grid-template-columns: 200px 1fr auto; gap: var(--space-6); align-items: center;">
+        <div class="my-profile-header card-body" style="display: grid; grid-template-columns: 200px 1fr auto; gap: var(--space-6); align-items: center;">
             <!-- Avatar / Primary Photo -->
-            <div style="aspect-ratio: 1; border-radius: var(--radius-xl); overflow: hidden; background: var(--color-gray-100); border: 2px solid var(--color-border-light); display: flex; align-items: center; justify-content: center; font-size: 4rem;">
+            <div class="my-profile-avatar" style="aspect-ratio: 1; border-radius: var(--radius-xl); overflow: hidden; background: var(--color-gray-100); border: 2px solid var(--color-border-light); display: flex; align-items: center; justify-content: center; font-size: 4rem;">
                 {% if profile.primary_photo %}
                     <img src="{{ profile.primary_photo.image.url }}" alt="{{ profile.display_name }}" style="width: 100%; height: 100%; object-fit: cover;">
                 {% else %}
@@ -36,8 +36,8 @@
             </div>
 
             <!-- Basic Details -->
-            <div>
-                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+            <div class="my-profile-summary">
+                <div class="my-profile-name" style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
                     <h1 style="font-size: var(--font-size-2xl);">{{ profile.display_name }}</h1>
                     {% if profile.is_verified %}
                     <span style="background: var(--color-success-light); color: var(--color-success); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);">
@@ -62,7 +62,7 @@
             </div>
 
             <!-- Action buttons -->
-            <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <div class="my-profile-actions" style="display: flex; flex-direction: column; gap: var(--space-2);">
                 <a href="{% url 'profiles:profile_edit' section='basic' %}" class="btn btn-primary">
                     ✏️ Edit Profile
                 </a>

@@ -10,8 +10,10 @@ from .base import *  # noqa: F401, F403
 DEBUG = True
 
 # Allow all hosts in development
-if not ALLOWED_HOSTS:
-    ALLOWED_HOSTS = ['*']
+# if not ALLOWED_HOSTS:
+#     ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', '[IP_ADDRESS]']    
+
 
 # Django Debug Toolbar
 INSTALLED_APPS += ['debug_toolbar']  # noqa: F405

@@ -205,6 +205,25 @@ class Profile(models.Model):
         return self.photos.filter(is_approved=True).first()
 
 
+class ProfileView(models.Model):
+    """A unique profile visit per viewer and calendar day."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='views')
+    viewer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile_views')
+    viewed_date = models.DateField(default=date.today)
+    viewed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['profile', 'viewer', 'viewed_date'],
+                name='unique_profile_viewer_view',
+            ),
+        ]
+        indexes = [models.Index(fields=['profile', '-viewed_at'])]
+
+
 class EducationDetail(models.Model):
     """Educational qualifications of a matrimonial candidate."""
 

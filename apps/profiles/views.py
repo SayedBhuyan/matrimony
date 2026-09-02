@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import (
@@ -23,6 +24,7 @@ from .models import (
     ProfessionDetail,
     Profile,
     ProfilePhoto,
+    ProfileView,
 )
 from .services import calculate_profile_completion
 
@@ -245,6 +247,13 @@ def profile_detail(request, profile_id):
     )
 
     is_owner = request.user.is_authenticated and request.user == profile.user
+
+    if request.user.is_authenticated and not is_owner:
+        ProfileView.objects.get_or_create(
+            profile=profile,
+            viewer=request.user,
+            viewed_date=timezone.localdate(),
+        )
 
     # Visibility Enforcement:
     # 1. Registered only

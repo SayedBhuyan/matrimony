@@ -28,6 +28,8 @@ def get_base_discovery_queryset(request):
     # Exclude own profile if logged in
     if request.user.is_authenticated and hasattr(request.user, 'profile'):
         qs = qs.exclude(user=request.user)
+        qs = qs.exclude(user__blocked_by__user=request.user)
+        qs = qs.exclude(user__blocked_users__blocked_user=request.user)
 
     # If unauthenticated, only show public visibility profiles
     if not request.user.is_authenticated:

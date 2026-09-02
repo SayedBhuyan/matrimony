@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Messages{% endblock %}
+{% block nav_messages %}active{% endblock %}
+
+{% block content %}
+<div class="container page-shell">
+    <div class="section-heading"><div><p class="eyebrow">Stay connected</p><h1>Messages</h1><p class="text-muted">Continue the conversations that matter.</p></div></div>
+    <div class="conversation-list">
+        {% for conversation in conversations %}
+            {% if conversation.interest.sender == user %}{% with person=conversation.interest.receiver %}
+            <a class="conversation-preview card" href="{% url 'messaging:conversation_detail' conversation.id %}"><div class="avatar">{{ person.profile.display_name|default:person.email|first|upper }}</div><div class="conversation-preview-copy"><h2>{{ person.profile.display_name|default:person.email }}</h2><p>Open conversation</p></div>{% if conversation.unread_count %}<span class="unread-count">{{ conversation.unread_count }}</span>{% endif %}<span class="conversation-arrow">&#8594;</span></a>
+            {% endwith %}{% else %}{% with person=conversation.interest.sender %}
+            <a class="conversation-preview card" href="{% url 'messaging:conversation_detail' conversation.id %}"><div class="avatar">{{ person.profile.display_name|default:person.email|first|upper }}</div><div class="conversation-preview-copy"><h2>{{ person.profile.display_name|default:person.email }}</h2><p>Open conversation</p></div>{% if conversation.unread_count %}<span class="unread-count">{{ conversation.unread_count }}</span>{% endif %}<span class="conversation-arrow">&#8594;</span></a>
+            {% endwith %}{% endif %}
+        {% empty %}<div class="card empty-state"><span>💬</span><h2>No conversations yet</h2><p class="text-muted">Accepted interests will open a private conversation here.</p></div>{% endfor %}
+    </div>
+</div>
+{% endblock %}

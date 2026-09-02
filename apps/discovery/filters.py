@@ -88,12 +88,14 @@ class ProfileFilter(django_filters.FilterSet):
         method='filter_has_photo',
         label='Only Profiles with Photo',
         widget=forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+        initial=False,
     )
 
     is_verified = django_filters.BooleanFilter(
-        field_name='is_verified',
+        method='filter_is_verified',
         label='Only Verified Profiles',
         widget=forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+        initial=False,
     )
 
     sort = django_filters.ChoiceFilter(
@@ -161,6 +163,11 @@ class ProfileFilter(django_filters.FilterSet):
     def filter_has_photo(self, queryset, name, value):
         if value:
             return queryset.filter(photos__is_approved=True).distinct()
+        return queryset
+
+    def filter_is_verified(self, queryset, name, value):
+        if value:
+            return queryset.filter(is_verified=True)
         return queryset
 
     def filter_sort(self, queryset, name, value):

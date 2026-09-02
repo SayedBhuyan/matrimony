@@ -73,10 +73,10 @@
         <a href="{% url 'profiles:profile_detail' profile_id=profile.id %}" class="btn btn-secondary btn-sm" style="flex: 1;">
             View Profile
         </a>
-        <button type="button" class="btn btn-primary btn-sm" title="Send Interest">
+        <button type="button" class="btn btn-primary btn-sm js-action" data-action="interest" data-url="{% url 'connections:send_interest' profile_id=profile.id %}" data-title="Send interest to {{ profile.display_name }}" title="Send Interest">
             💌
         </button>
-        <button type="button" class="btn btn-ghost btn-sm" title="Shortlist">
+        <button type="button" class="btn btn-ghost btn-sm js-action" data-action="favorite" data-url="{% url 'connections:add_favorite' profile_id=profile.id %}" data-title="Save {{ profile.display_name }}" title="Shortlist">
             ⭐
         </button>
     </div>

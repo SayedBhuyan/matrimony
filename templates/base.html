@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{% block meta_description %}Find your perfect life partner on our trusted matrimonial platform.{% endblock %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
     <title>{% block title %}Matrimony{% endblock %} — Vivaha</title>
 
     <!-- Fonts -->
@@ -42,18 +44,18 @@
                     <a href="{% url 'discovery:matches' %}" class="nav-link {% block nav_discover %}{% endblock %}">
                         🔍 Discover
                     </a>
-                    <a href="#" class="nav-link {% block nav_interests %}{% endblock %}">
+                    <a href="{% url 'connections:received_interests' %}" class="nav-link {% block nav_interests %}{% endblock %}">
                         💌 Interests
                     </a>
-                    <a href="#" class="nav-link {% block nav_messages %}{% endblock %}">
+                    <a href="{% url 'messaging:conversations' %}" class="nav-link {% block nav_messages %}{% endblock %}">
                         💬 Messages
                     </a>
-                    <a href="#" class="nav-link {% block nav_notifications %}{% endblock %}">
-                        🔔
+                    <a href="{% url 'messaging:notifications' %}" class="nav-link {% block nav_notifications %}{% endblock %}">
+                        🔔 {% if unread_notifications_count %}<span class="nav-badge">{{ unread_notifications_count }}</span>{% endif %}
                     </a>
-                    <form method="post" action="{% url 'accounts:logout' %}" style="margin: 0;">
+                    <form method="post" action="{% url 'accounts:logout' %}" style="margin: 0; width: 100%; max-width: 140px;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-ghost btn-sm">Logout</button>
+                        <button type="submit" class="btn btn-ghost btn-sm btn-full">Logout</button>
                     </form>
                 {% else %}
                     <a href="{% url 'accounts:login' %}" class="nav-link">Log In</a>
@@ -82,6 +84,23 @@
     <main class="{% block main_class %}main-content{% endblock %}" id="main-content">
         {% block content %}{% endblock %}
     </main>
+
+    <div class="modal-backdrop" id="action-modal" hidden>
+        <section class="action-modal" role="dialog" aria-modal="true" aria-labelledby="action-modal-title">
+            <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">&times;</button>
+            <div class="modal-icon" id="action-modal-icon">💌</div>
+            <h2 id="action-modal-title">Connect with this profile</h2>
+            <p class="modal-copy" id="action-modal-copy">Add a personal note before sending your interest.</p>
+            <form id="action-modal-form">
+                <div id="action-modal-fields"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="action-modal-submit">Continue</button>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Footer -->
     {% block footer %}

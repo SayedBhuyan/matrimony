@@ -16,31 +16,31 @@
             <div class="stat-card">
                 <div class="stat-icon pink">👀</div>
                 <div class="stat-info">
-                    <h3>0</h3>
+                    <h3>{{ profile_views_count }}</h3>
                     <p>Profile Views</p>
                 </div>
             </div>
-            <div class="stat-card">
+            <a class="stat-card stat-card-link" href="{% url 'connections:received_interests' %}">
                 <div class="stat-icon gold">💌</div>
                 <div class="stat-info">
-                    <h3>0</h3>
+                    <h3>{{ interests_received_count }}</h3>
                     <p>Interests Received</p>
                 </div>
-            </div>
-            <div class="stat-card">
+            </a>
+            <a class="stat-card stat-card-link" href="{% url 'messaging:conversations' %}">
                 <div class="stat-icon green">✅</div>
                 <div class="stat-info">
-                    <h3>0</h3>
+                    <h3>{{ accepted_connections_count.count }}</h3>
                     <p>Accepted Connections</p>
                 </div>
-            </div>
-            <div class="stat-card">
+            </a>
+            <a class="stat-card stat-card-link" href="{% url 'messaging:conversations' %}">
                 <div class="stat-icon blue">💬</div>
                 <div class="stat-info">
-                    <h3>0</h3>
+                    <h3>{{ unread_messages_count }}</h3>
                     <p>Unread Messages</p>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Profile Completion / Welcome Prompt -->
@@ -88,17 +88,21 @@
                     <span class="icon">🔍</span>
                     <span>Discover Matches</span>
                 </a>
-                <a href="#" class="action-card" id="action-interests">
+                <a href="{% url 'connections:received_interests' %}" class="action-card" id="action-interests">
                     <span class="icon">💌</span>
                     <span>View Interests</span>
                 </a>
-                <a href="#" class="action-card" id="action-favorites">
+                <a href="{% url 'connections:favorites_list' %}" class="action-card" id="action-favorites">
                     <span class="icon">⭐</span>
                     <span>My Favorites</span>
                 </a>
-                <a href="#" class="action-card" id="action-settings">
+                <a href="{% url 'profiles:profile_edit' section='basic' %}" class="action-card" id="action-settings">
                     <span class="icon">⚙️</span>
                     <span>Account Settings</span>
+                </a>
+                <a href="{% url 'connections:blocked_users' %}" class="action-card" id="action-blocked">
+                    <span class="icon">🚫</span>
+                    <span>Blocked Profiles</span>
                 </a>
             </div>
         </div>

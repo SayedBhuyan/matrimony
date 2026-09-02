@@ -12,6 +12,8 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('profiles/', include('apps.profiles.urls')),
     path('discover/', include('apps.discovery.urls')),
+    path('connections/', include('apps.connections.urls')),
+    path('messages/', include('apps.messaging.urls')),
     path('', include('apps.core.urls')),
 ]
 

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Conversation{% endblock %}
+{% block nav_messages %}active{% endblock %}
+
+{% block content %}
+<div class="container conversation-page">
+    <section class="conversation-shell">
+        <header class="conversation-header">
+            <a href="{% url 'messaging:conversations' %}" class="conversation-back" aria-label="Back to conversations">&#8592;</a>
+            {% if conversation.interest.sender == user %}
+                {% with person=conversation.interest.receiver %}
+                    <div class="avatar avatar-sm">{{ person.profile.display_name|default:person.email|first|upper }}</div>
+                    <div class="conversation-person"><h1>{{ person.profile.display_name|default:person.email }}</h1><p>Connected member</p></div>
+                {% endwith %}
+            {% else %}
+                {% with person=conversation.interest.sender %}
+                    <div class="avatar avatar-sm">{{ person.profile.display_name|default:person.email|first|upper }}</div>
+                    <div class="conversation-person"><h1>{{ person.profile.display_name|default:person.email }}</h1><p>Connected member</p></div>
+                {% endwith %}
+            {% endif %}
+        </header>
+        <div class="message-thread" data-message-thread>
+            <div class="conversation-date">Your connection is open</div>
+            {% for message in messages %}
+                <div class="message-row {% if message.sender == user %}message-row-own{% endif %}">
+                    <div class="message-bubble {% if message.sender == user %}message-bubble-own{% endif %}"><p>{{ message.body }}</p><small>{{ message.sent_at|date:"g:i A" }}</small></div>
+                </div>
+            {% empty %}
+                <div class="conversation-empty"><span>💬</span><h2>Start the conversation</h2><p>Say hello and begin getting to know each other.</p></div>
+            {% endfor %}
+        </div>
+        <form class="message-composer" method="post" action="{% url 'messaging:send_message' conversation.id %}" data-ajax-action="message">
+            {% csrf_token %}
+            <textarea name="body" rows="1" maxlength="2000" placeholder="Write a thoughtful message..." required></textarea>
+            <button type="submit" class="btn btn-primary" aria-label="Send message">Send <span>&#8593;</span></button>
+        </form>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--space-8) var(--space-4);">
+    <div class="card">
+        <div class="card-header">
+            <h1 style="font-size: var(--font-size-2xl); margin: 0;">Notifications</h1>
+        </div>
+        <div class="card-body">
+            {% if notifications %}
+                <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                    {% for notification in notifications %}
+                        <div class="card notification-item">
+                            <div class="card-body">
+                                <strong>{{ notification.title }}</strong>
+                                <p style="margin: var(--space-2) 0 0;">{{ notification.message }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted" style="margin: 0;">No notifications.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

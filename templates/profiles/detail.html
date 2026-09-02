@@ -4,12 +4,12 @@
 {% block meta_description %}View profile of {{ profile.display_name }}, {{ profile.age }} years, {{ profile.city }}, {{ profile.country }} on Vivaha.{% endblock %}
 
 {% block content %}
-<div class="container" style="padding: var(--space-8) var(--space-4);">
+<div class="container profile-detail-page" style="padding: var(--space-8) var(--space-4);">
     <!-- Profile Hero Card -->
     <div class="card mb-6" style="overflow: hidden;">
-        <div style="display: grid; grid-template-columns: minmax(240px, 320px) 1fr; gap: var(--space-8); align-items: start; padding: var(--space-6);">
+        <div class="profile-hero-grid" style="display: grid; grid-template-columns: minmax(240px, 320px) 1fr; gap: var(--space-8); align-items: start; padding: var(--space-6);">
             <!-- Photo Gallery Column -->
-            <div>
+            <div class="profile-gallery">
                 <div style="aspect-ratio: 1; border-radius: var(--radius-xl); overflow: hidden; background: var(--color-gray-100); border: 2px solid var(--color-border-light); margin-bottom: var(--space-3); display: flex; align-items: center; justify-content: center; font-size: 5rem;">
                     {% if profile.primary_photo %}
                         <img id="main-photo" src="{{ profile.primary_photo.image.url }}" alt="{{ profile.display_name }}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -31,8 +31,8 @@
             </div>
 
             <!-- Profile Info Summary -->
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4);">
+            <div class="profile-summary">
+                <div class="profile-summary-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4);">
                     <div>
                         <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-1);">
                             <h1 style="font-size: var(--font-size-3xl);">{{ profile.display_name }}</h1>
@@ -49,12 +49,18 @@
 
                     <!-- Interactions (Express Interest, Shortlist) -->
                     {% if not is_owner %}
-                    <div style="display: flex; gap: var(--space-2);">
-                        <button class="btn btn-primary" id="btn-express-interest" title="Express Interest">
+                    <div class="profile-actions" style="display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: flex-end;">
+                        <button class="btn btn-primary js-action" data-action="interest" data-url="{% url 'connections:send_interest' profile_id=profile.id %}" data-title="Send interest to {{ profile.display_name }}" title="Express Interest">
                             💌 Send Interest
                         </button>
-                        <button class="btn btn-secondary" id="btn-favorite" title="Save to Favorites">
-                            ⭐
+                        <button class="btn btn-secondary js-action" data-action="favorite" data-url="{% url 'connections:add_favorite' profile_id=profile.id %}" data-title="Save {{ profile.display_name }}" title="Save to Favorites">
+                            ⭐ Favorite
+                        </button>
+                        <button class="btn btn-ghost js-action" data-action="block" data-url="{% url 'connections:block_user' user_id=profile.user.id %}" data-title="Block {{ profile.display_name }}" title="Block user">
+                            🚫 Block
+                        </button>
+                        <button class="btn btn-ghost js-action" data-action="report" data-url="{% url 'connections:report_user' user_id=profile.user.id %}" data-title="Report {{ profile.display_name }}" title="Report profile">
+                            ⚠️ Report
                         </button>
                     </div>
                     {% else %}
@@ -244,4 +250,7 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
 {% endblock %}

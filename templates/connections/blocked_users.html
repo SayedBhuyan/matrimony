@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Blocked Profiles{% endblock %}
+{% block nav_profile %}active{% endblock %}
+
+{% block content %}
+<div class="container page-shell">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">Your privacy</p>
+            <h1>Blocked profiles</h1>
+            <p class="text-muted">Manage people you have chosen not to interact with.</p>
+        </div>
+    </div>
+    <div class="blocked-list">
+        {% for block in blocks %}
+        <article class="card blocked-item" data-block-item>
+            <div class="blocked-person">
+                <div class="avatar avatar-sm">{{ block.blocked_user.profile.display_name|default:block.blocked_user.email|first|upper }}</div>
+                <div>
+                    <h2>{{ block.blocked_user.profile.display_name|default:block.blocked_user.email }}</h2>
+                    <p class="text-muted">Blocked {{ block.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+            <form method="post" action="{% url 'connections:unblock_user' block.blocked_user.id %}" data-ajax-action="unblock">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary btn-sm">Unblock</button>
+            </form>
+        </article>
+        {% empty %}
+        <div class="card empty-state"><h2>No blocked profiles</h2><p class="text-muted">Profiles you block will appear here.</p></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
